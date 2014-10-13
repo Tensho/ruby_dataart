@@ -23,19 +23,51 @@ describe 'Storage (implements trie data structure)' do
         subject.add(str_2)
         subject.root_node.children.wont_be_empty
         # TODO: subject.traverse(root_node)
-        subject.root_node.children.map(&:value).must_be :==, ['abc']
-        subject.root_node.children.flat_map(&:children).flat_map(&:value).must_be :==, ['def']
+        subject.root_node.children.map(&:value).must_equal ['abc']
+        subject.root_node.children.flat_map(&:children).flat_map(&:value).must_equal ['def']
       end
     end
   end
 
   describe '#contains?' do
-    context 'string present in storage' do
-      it 'returns true'
+    context 'empty storage' do
+      let(:str) { 'abc, def' }
+
+      it 'returns false' do
+        subject.contains?(str).must_equal false
+      end
     end
 
-    context 'string absent in storage' do
-      it 'returns false'
+    context 'nonempty storage' do
+      before do
+        subject.add('uvw, xyz')
+        subject.add('abc, ghi')
+      end
+
+      context 'empty string' do
+        let(:str) { '' }
+
+        it 'returns true' do
+          subject.contains?(str).must_equal true
+        end
+      end
+
+      context 'string present in storage' do
+        let(:str) { 'abc, def' }
+        before { subject.add(str) }
+
+        it 'returns true' do
+          subject.contains?(str).must_equal true
+        end
+      end
+
+      context 'string absent in storage' do
+        let(:str) { 'abc, def' }
+
+        it 'returns false' do
+          subject.contains?(str).must_equal false
+        end
+      end
     end
   end
 

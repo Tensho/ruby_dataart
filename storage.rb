@@ -19,6 +19,7 @@ class Storage
   def add(str)
     words = str.split(', ')
     add_node(root_node, words) unless words.empty?
+    self
   end
 
   def add_node(node, words)
@@ -32,6 +33,25 @@ class Storage
       end
     else
       add_node(child_node, words)
+    end
+  end
+
+  def contains?(str)
+    words = str.split(', ')
+    words.empty? ? true : contains_node?(root_node, words)
+  end
+
+  def contains_node?(node, words)
+    word = words.shift
+    child_node = node.children.detect { |child| child.value == word }
+    unless child_node
+      false
+    else
+      if words.empty?
+        true
+      else
+        contains_node?(child_node, words)
+      end
     end
   end
 
