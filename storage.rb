@@ -55,4 +55,14 @@ class Storage
     end
   end
 
+  def traverse(node = root_node, res = {})
+    res[node.value] = {}
+    node.children.each { |child_node| traverse(child_node, res[node.value]) }
+    res
+  end
+
+  def to_s
+    traverse
+  end
+
 end
