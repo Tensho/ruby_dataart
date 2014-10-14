@@ -6,85 +6,99 @@ describe 'Storage (implements trie data structure)' do
 
   describe '#add' do
     context 'empty string' do
-      let(:str) { '' }
+      before { subject.add('') }
 
-      it 'root node has not children' do
-        subject.add(str)
-        subject.root_node.children.must_be_empty
+      it 'returns storage with empty trie' do
+        expected = { "" => {} }
+        subject.to_h.must_equal expected
       end
     end
 
     context 'nonempty string' do
-      let(:str_1) { 'abc,abd' }
-      let(:str_2) { 'abde,abdf' }
+      before { subject.add('abc,abd,abde,abdf') }
 
-      before do
-        subject.add(str_1)
-        subject.add(str_2)
-      end
-
-      it 'root node has children' do
-        subject.root_node.children.wont_be_empty
-      end
-
-      it 'builds trie' do
+      it 'returns storage with built trie and marked terminals' do
         expected = {
-          "" => { "a" => { "b" => { "c" => {},
-                                    "d" => { "e" => {},
-                                             "f" => {}
-                                           }
+          "" => { "a" => { "b" => { "c(X)" => {},
+                                    "d(X)" => { "e(X)" => {},
+                                                "f(X)" => {}
+                                              }
                                   }
                          }
                 }
         }
-        subject.traverse.must_equal expected
+        subject.to_h.must_equal expected
       end
     end
   end
 
-  # describe '#contains?' do
-  #   context 'empty storage' do
-  #     let(:str) { 'abc, def' }
-  #
-  #     it 'returns false' do
-  #       subject.contains?(str).must_equal false
-  #     end
-  #   end
-  #
-  #   context 'nonempty storage' do
-  #     before do
-  #       subject.add('uvw, xyz')
-  #       subject.add('abc, ghi')
-  #     end
-  #
-  #     context 'empty string' do
-  #       let(:str) { '' }
-  #
-  #       it 'returns true' do
-  #         subject.contains?(str).must_equal true
-  #       end
-  #     end
-  #
-  #     context 'string present in storage' do
-  #       let(:str) { 'abc, def' }
-  #       before { subject.add(str) }
-  #
-  #       it 'returns true' do
-  #         subject.contains?(str).must_equal true
-  #       end
-  #     end
-  #
-  #     context 'string absent in storage' do
-  #       let(:str) { 'abc, def' }
-  #
-  #       it 'returns false' do
-  #         subject.contains?(str).must_equal false
-  #       end
-  #     end
-  #   end
-  # end
-  #
-  # describe '#find' do
-  #   it 'returns strings started with prefix'
-  # end
+  describe '#contains?' do
+    context 'empty word' do
+      it 'returns true' do
+        subject.contains?('').must_equal true
+      end
+    end
+
+    context 'empty storage' do
+      context 'nonempty word' do
+        it 'returns false' do
+          subject.contains?('abc').must_equal false
+        end
+      end
+    end
+
+    context 'nonempty storage' do
+      before { subject.add('abcd,abcde,abcdf') }
+
+      context 'word present in storage' do
+        it 'returns true' do
+          subject.contains?('abcd').must_equal true
+        end
+      end
+
+      context 'prefix present in storage, but not whole word' do
+        it 'returns false' do
+          subject.contains?('abc').must_equal false
+        end
+      end
+
+      context 'word absent in storage' do
+        it 'returns false' do
+          subject.contains?('xyz').must_equal false
+        end
+      end
+    end
+  end
+
+  describe '#find' do
+    context 'empty storage' do
+      it 'returns empty array' do
+        subject.find('abc').must_be_empty
+      end
+    end
+
+    context 'nonempty storage' do
+      before { subject.add('abc,abcd,abcde,xyz') }
+
+      context 'for storage with words started with prefix' do
+        it 'returns words started with prefix' do
+          subject.find('abc').must_equal ["abc", "abcde", "abcd"]
+        end
+      end
+
+      context 'for storage without words started with prefix' do
+        it 'returns empty array' do
+          subject.find('uvw').must_be_empty
+        end
+      end
+    end
+
+    context 'prefix less than 3 symbols' do
+      let(:prefix) { 'uv' }
+
+      it 'raises argument error exception' do
+        -> { subject.find(prefix) }.must_raise ArgumentError
+      end
+    end
+  end
 end
