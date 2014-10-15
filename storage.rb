@@ -80,24 +80,14 @@ class Storage
     else
       value = values.shift
       child_node = node.children.detect { |child| child.value == value }
-
       if child_node
         s << child_node.value
         res << s if child_node.terminal?
         _find(child_node, values, res, s)
       end
-
     end
 
     res
-  end
-
-  # TODO: via Enumerable
-  def traverse(node = root_node, &block)
-    node.children.each do |child_node|
-      block.call(child_node) if block_given?
-      traverse(child_node, &block)
-    end
   end
 
   def to_h(node = root_node, res = {})
