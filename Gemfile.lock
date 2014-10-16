@@ -4,6 +4,7 @@ GEM
     docile (1.1.5)
     minitest-spec-context (0.0.3)
     multi_json (1.10.1)
+    rubyzip (1.1.6)
     simplecov (0.9.1)
       docile (~> 1.1.0)
       multi_json (~> 1.0)
@@ -15,4 +16,5 @@ PLATFORMS
 
 DEPENDENCIES
   minitest-spec-context
+  rubyzip
   simplecov

@@ -1,3 +1,5 @@
+require "zip"
+
 class Storage
 
   class Node
@@ -64,6 +66,12 @@ class Storage
   end
 
   def load_from_zip(filename)
+    Zip::File.open(filename) do |zip_file|
+      zip_file.each do |entry|
+        add(entry.get_input_stream.read.gsub("\n", ','))
+      end
+    end
+    self
   end
 
   def save_to_zip(filename)
