@@ -1,3 +1,5 @@
+require "zip"
+
 class Storage
 
   class Node
@@ -51,18 +53,57 @@ class Storage
     res
   end
 
+  def load_from_file(filename)
+    File.read(filename).split("\n").each do |str|
+      add(str)
+    end
+    self
+  end
+
+  def save_to_file(filename)
+    words = _find(root_node, [])
+    File.open(filename, "w+") { |f| f.puts(words) }
+    self
+  end
+
+  def load_from_zip(filename)
+    Zip::File.open(filename) do |zip_file|
+      zip_file.each do |entry|
+        # REVIEW: get_input_stream doesn't need tempfile
+        add(entry.get_input_stream.read.gsub("\n", ','))
+      end
+    end
+    self
+  end
+
+  def save_to_zip(filename)
+    words = _find(root_node, [])
+    Zip::File.open(filename, Zip::File::CREATE) do |zip_file|
+      # REVIEW: get_output_stream doesn't need tempfile
+      zip_file.get_output_stream(filename) { |os| os.puts(words) }
+    end
+    self
+  end
+
+
   private
 
   def _add(node, values)
     value = values.shift
     child_node = node.children.detect { |child| child.value == value }
     if child_node
-      _add(child_node, values)
+      if values.empty?
+        child_node.terminal = true
+      else
+        _add(child_node, values)
+      end
     else
       new_node = Node.new(value)
-      new_node.terminal = true if values.empty?
       node.children << new_node
-      unless values.empty?
+
+      if values.empty?
+        new_node.terminal = true
+      else
         _add(new_node, values)
       end
     end

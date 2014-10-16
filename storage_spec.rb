@@ -101,4 +101,76 @@ describe 'Storage (implements trie data structure)' do
       end
     end
   end
+
+  describe '#load_from_file' do
+    it 'loads words from file to storage' do
+      expected = {
+        ""=>{"a(X)"=>{"n"=>{"z"=>{"u"=>{"r"=>{"u(X)"=>{}}}}},
+                      "b"=>{"o"=>{"u"=>{"t(X)"=>{}}}}},
+             "y"=>{"o"=>{"r"=>{"i(X)"=>{}}},
+                   "a"=>{"s"=>{"u"=>{"s"=>{"h"=>{"i(X)"=>{}}}}}}},
+             "u"=>{"m"=>{"u(X)"=>{}}},
+             "g"=>{"a(X)"=>{},
+                   "i"=>{"v"=>{"i"=>{"n"=>{"g(X)"=>{}}}}}},
+             "b"=>{"i"=>{"r"=>{"t"=>{"h(X)"=>{}}}},
+                   "a"=>{"b"=>{"y(X)"=>{}}}},
+             "t"=>{"o(X)"=>{},
+                   "h"=>{"a"=>{"n(X)"=>{}}}},
+             "i"=>{"s(X)"=>{},
+                   "t(X)"=>{}},
+             "e"=>{"a"=>{"s"=>{"i"=>{"e"=>{"r(X)"=>{}}}}}},
+             "w"=>{"o"=>{"r"=>{"r"=>{"y"=>{"i"=>{"n"=>{"g(X)"=>{}}}}}}}}}
+      }
+      subject.load_from_file('words-in').to_h.must_equal expected
+    end
+  end
+
+  describe '#save_to_file' do
+    before do
+      subject.add('kono,chichi,ni,shite,kono,ko,ari')
+      subject.add('with,such,father,there,is,such,a,child')
+    end
+
+    it 'saves words from storage to file' do
+      subject.save_to_file('words-out')
+      expected = "kono\nko\nchichi\nchild\nni\nshite\nsuch\nari\na\nwith\nfather\nthere\nis\n"
+      File.read('words-out').must_equal expected
+    end
+  end
+
+  describe '#load_from_zip' do
+    it 'loads words from zip file to storage' do
+      expected = {
+        ""=>{"a(X)"=>{"n"=>{"z"=>{"u"=>{"r"=>{"u(X)"=>{}}}}},
+                      "b"=>{"o"=>{"u"=>{"t(X)"=>{}}}}},
+             "y"=>{"o"=>{"r"=>{"i(X)"=>{}}},
+                   "a"=>{"s"=>{"u"=>{"s"=>{"h"=>{"i(X)"=>{}}}}}}},
+             "u"=>{"m"=>{"u(X)"=>{}}},
+             "g"=>{"a(X)"=>{},
+                   "i"=>{"v"=>{"i"=>{"n"=>{"g(X)"=>{}}}}}},
+             "b"=>{"i"=>{"r"=>{"t"=>{"h(X)"=>{}}}},
+                   "a"=>{"b"=>{"y(X)"=>{}}}},
+             "t"=>{"o(X)"=>{},
+                   "h"=>{"a"=>{"n(X)"=>{}}}},
+             "i"=>{"s(X)"=>{},
+                   "t(X)"=>{}},
+             "e"=>{"a"=>{"s"=>{"i"=>{"e"=>{"r(X)"=>{}}}}}},
+             "w"=>{"o"=>{"r"=>{"r"=>{"y"=>{"i"=>{"n"=>{"g(X)"=>{}}}}}}}}}
+      }
+      subject.load_from_zip('sample-in.zip').to_h.must_equal expected
+    end
+  end
+
+  describe '#save_to_zip' do
+    before do
+      subject.add('kono,chichi,ni,shite,kono,ko,ari')
+      subject.add('with,such,father,there,is,such,a,child')
+    end
+
+    it 'saves words from storage to file' do
+      actual = subject.save_to_zip('sample-out.zip').to_h
+      expected = Storage.new.load_from_zip('sample-out.zip').to_h
+      actual.must_equal expected
+    end
+  end
 end
