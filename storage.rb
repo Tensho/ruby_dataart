@@ -58,6 +58,18 @@ class Storage
     self
   end
 
+  def save_to_file(filename)
+    words = _find(root_node, [])
+    File.open(filename, "w+") { |f| f.puts(words) }
+  end
+
+  def load_from_zip(filename)
+  end
+
+  def save_to_zip(filename)
+  end
+
+
   private
 
   def _add(node, values)

@@ -121,7 +121,20 @@ describe 'Storage (implements trie data structure)' do
              "e"=>{"a"=>{"s"=>{"i"=>{"e"=>{"r(X)"=>{}}}}}},
              "w"=>{"o"=>{"r"=>{"r"=>{"y"=>{"i"=>{"n"=>{"g(X)"=>{}}}}}}}}}
       }
-      subject.load_from_file('words').to_h.must_equal expected
+      subject.load_from_file('words-in').to_h.must_equal expected
+    end
+  end
+
+  describe '#save_to_file' do
+    before do
+      subject.add('kono,chichi,ni,shite,kono,ko,ari')
+      subject.add('with,such,father,there,is,such,a,child')
+    end
+
+    it 'saves words from storage to file' do
+      subject.save_to_file('words-out')
+      expected = "kono\nko\nchichi\nchild\nni\nshite\nsuch\nari\na\nwith\nfather\nthere\nis\n"
+      File.read('words-out').must_equal expected
     end
   end
 end
