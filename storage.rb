@@ -63,11 +63,13 @@ class Storage
   def save_to_file(filename)
     words = _find(root_node, [])
     File.open(filename, "w+") { |f| f.puts(words) }
+    self
   end
 
   def load_from_zip(filename)
     Zip::File.open(filename) do |zip_file|
       zip_file.each do |entry|
+        # REVIEW: get_input_stream doesn't need tempfile
         add(entry.get_input_stream.read.gsub("\n", ','))
       end
     end
@@ -75,6 +77,12 @@ class Storage
   end
 
   def save_to_zip(filename)
+    words = _find(root_node, [])
+    Zip::File.open(filename, Zip::File::CREATE) do |zip_file|
+      # REVIEW: get_output_stream doesn't need tempfile
+      zip_file.get_output_stream(filename) { |os| os.puts(words) }
+    end
+    self
   end
 
 

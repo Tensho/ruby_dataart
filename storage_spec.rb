@@ -157,7 +157,20 @@ describe 'Storage (implements trie data structure)' do
              "e"=>{"a"=>{"s"=>{"i"=>{"e"=>{"r(X)"=>{}}}}}},
              "w"=>{"o"=>{"r"=>{"r"=>{"y"=>{"i"=>{"n"=>{"g(X)"=>{}}}}}}}}}
       }
-      subject.load_from_zip('words-in.zip').to_h.must_equal expected
+      subject.load_from_zip('sample-in.zip').to_h.must_equal expected
+    end
+  end
+
+  describe '#save_to_zip' do
+    before do
+      subject.add('kono,chichi,ni,shite,kono,ko,ari')
+      subject.add('with,such,father,there,is,such,a,child')
+    end
+
+    it 'saves words from storage to file' do
+      actual = subject.save_to_zip('sample-out.zip').to_h
+      expected = Storage.new.load_from_zip('sample-out.zip').to_h
+      actual.must_equal expected
     end
   end
 end
