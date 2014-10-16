@@ -101,4 +101,27 @@ describe 'Storage (implements trie data structure)' do
       end
     end
   end
+
+  describe '#load_from_file' do
+    it 'loads words from file to storage' do
+      expected = {
+        ""=>{"a(X)"=>{"n"=>{"z"=>{"u"=>{"r"=>{"u(X)"=>{}}}}},
+                      "b"=>{"o"=>{"u"=>{"t(X)"=>{}}}}},
+             "y"=>{"o"=>{"r"=>{"i(X)"=>{}}},
+                   "a"=>{"s"=>{"u"=>{"s"=>{"h"=>{"i(X)"=>{}}}}}}},
+             "u"=>{"m"=>{"u(X)"=>{}}},
+             "g"=>{"a(X)"=>{},
+                   "i"=>{"v"=>{"i"=>{"n"=>{"g(X)"=>{}}}}}},
+             "b"=>{"i"=>{"r"=>{"t"=>{"h(X)"=>{}}}},
+                   "a"=>{"b"=>{"y(X)"=>{}}}},
+             "t"=>{"o(X)"=>{},
+                   "h"=>{"a"=>{"n(X)"=>{}}}},
+             "i"=>{"s(X)"=>{},
+                   "t(X)"=>{}},
+             "e"=>{"a"=>{"s"=>{"i"=>{"e"=>{"r(X)"=>{}}}}}},
+             "w"=>{"o"=>{"r"=>{"r"=>{"y"=>{"i"=>{"n"=>{"g(X)"=>{}}}}}}}}}
+      }
+      subject.load_from_file('words').to_h.must_equal expected
+    end
+  end
 end

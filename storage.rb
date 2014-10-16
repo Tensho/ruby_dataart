@@ -51,18 +51,31 @@ class Storage
     res
   end
 
+  def load_from_file(filename)
+    File.read(filename).split("\n").each do |str|
+      add(str)
+    end
+    self
+  end
+
   private
 
   def _add(node, values)
     value = values.shift
     child_node = node.children.detect { |child| child.value == value }
     if child_node
-      _add(child_node, values)
+      if values.empty?
+        child_node.terminal = true
+      else
+        _add(child_node, values)
+      end
     else
       new_node = Node.new(value)
-      new_node.terminal = true if values.empty?
       node.children << new_node
-      unless values.empty?
+
+      if values.empty?
+        new_node.terminal = true
+      else
         _add(new_node, values)
       end
     end
