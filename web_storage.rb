@@ -2,7 +2,7 @@ require_relative 'storage'
 require 'sinatra'
 require 'json'
 
-s = Storage.new
+s = Storage.new.load_from_file('words-in')
 
 get '/add' do
   content_type :json
