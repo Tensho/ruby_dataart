@@ -1,6 +1,7 @@
 source "https://rubygems.org"
 
 gem 'rubyzip'
+gem 'sinatra'
 
 group :test do
   gem "simplecov", require: false
