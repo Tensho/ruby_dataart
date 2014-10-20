@@ -43,7 +43,9 @@ class Storage
   def find(prefix)
     letters = prefix.split('')
     raise ArgumentError, 'Prefix should be 3 letter at least' if letters.size < 3
-    _find(root_node, letters)
+    res = []
+    res << prefix if contains?(prefix)
+    res + _find(root_node, letters)
   end
 
   def to_h(node = root_node, res = {})
@@ -132,7 +134,6 @@ class Storage
       child_node = node.children.detect { |child| child.value == value }
       if child_node
         s << child_node.value
-        res << s if child_node.terminal?
         _find(child_node, values, res, s)
       end
     end
