@@ -6,4 +6,5 @@ gem 'sinatra'
 group :test do
   gem "simplecov", require: false
   gem "minitest-spec-context"
+  gem "minitest-reporters"
 end
